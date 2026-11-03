@@ -18,7 +18,15 @@ body { margin:0; background:var(--bg); color:var(--ink);
 h1,h2,h3,p,ul,ol { margin:0; }
 a { color:var(--blue); text-underline-offset:3px; }
 .wrap { max-width:1000px; margin:0 auto; padding:0 28px; }
-@media (max-width:640px) { .wrap { padding:0 18px; } }
+@media (max-width:640px) {
+  .wrap { padding:0 18px; }
+  nav .wrap { padding:10px 18px; gap:16px; }
+  h1 { letter-spacing:-.03em; }
+  .num { font-size:12.5px; padding-left:8px; }
+  tbody th, tbody td { font-size:13.5px; padding:9px 0; }
+  .avgbar { height:38px; }
+  .avgbar b { font-size:11.5px; }
+}
 
 nav { position:sticky; top:0; z-index:20; background:#F6F7F9EE; backdrop-filter:blur(8px);
   border-bottom:1px solid var(--line); }
@@ -60,9 +68,20 @@ tbody th { font-weight:500; text-align:left; }
 .pos { color:var(--green); } .neg { color:var(--red); }
 .dot { display:inline-block; width:9px; height:9px; border-radius:2px; margin-right:9px; }
 
+/* charts */
+figure { margin:18px 0 6px; }
+.chart { width:100%; height:auto; display:block; overflow:visible; }
+.gl { stroke:#E7EAEF; stroke-width:1; }
+.base { stroke:#0D1117; stroke-width:1.2; }
+text.ax { font-family:"Inter",sans-serif; font-size:11px; fill:#77808D; }
+text.vl { font-family:"Inter",sans-serif; font-size:11px; font-weight:600; fill:#20262D; }
+text.avl { font-family:"Inter",sans-serif; font-size:11px; fill:#0D1117; font-weight:500; }
+.cn { display:none; }
+@media (max-width:640px) { .cw { display:none; } .cn { display:block; } }
+
 /* month grid */
 .months { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:22px; }
-@media (max-width:760px) { .months { grid-template-columns:1fr; } }
+
 .m { background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 16px 12px; }
 .m header { display:flex; justify-content:space-between; align-items:baseline; }
 .m h3 { font-size:19px; }
@@ -93,24 +112,24 @@ footer { border-top:1px solid var(--line); padding:20px 0 44px; font-size:12.5px
 <body>
 <nav><div class="wrap">
   <span class="brand">Gastos 2026</span>
-  <a href="#tipo">El mes tipo</a><a href="#meses">Los once meses</a>
+  <a href="#tipo">El mes tipo</a><a href="#meses">Cómo varían</a>
   <a href="#fijo">Lo fijo</a><a href="#metodo">Método</a>
 </div></nav>
 
 <header class="hero"><div class="wrap">
   <h1>1.956&nbsp;€ al mes<span>.</span></h1>
-  <p class="dek">Es la media de los diez meses completos del año: 19.564 € en 307 días.
+  <p class="dek">Es la media de los diez meses completos: 19.564 € en 304 días.
     Así se compone un mes normal, y así se desviaron los otros.</p>
 </div></header>
 
 <section id="tipo"><div class="wrap">
   <h2>El mes tipo</h2>
   <p class="note">Si cada mes fuera igual, sería esta barra. Seis grupos, 1.956 € al mes,
-    194 € al día.</p>
+    64 € al día.</p>
   <div class="avgbar"><span style="width:32.63%;background:#1F4E9C" title="Vivienda: 638 €"><b>638 €</b></span><span style="width:17.90%;background:#C4661F" title="Comida: 350 €"><b>350 €</b></span><span style="width:13.19%;background:#6B4FA1" title="Universidad: 258 €"></span><span style="width:11.47%;background:#2C7C79" title="Moverse: 224 €"></span><span style="width:11.57%;background:#8A7A1F" title="Recibos: 226 €"></span><span style="width:13.24%;background:#B0455A" title="Vida: 259 €"></span></div>
   <div class="avglabels"><span class="al"><i style="background:#1F4E9C"></i>Vivienda</span><span class="al"><i style="background:#C4661F"></i>Comida</span><span class="al"><i style="background:#6B4FA1"></i>Universidad</span><span class="al"><i style="background:#2C7C79"></i>Moverse</span><span class="al"><i style="background:#8A7A1F"></i>Recibos</span><span class="al"><i style="background:#B0455A"></i>Vida</span></div>
   <table><thead><tr><th>Grupo</th><th class="num">Al mes</th><th class="num">Peso</th>
-    <th class="num">Al día</th></tr></thead><tbody><tr><th scope="row"><span class="dot" style="background:#1F4E9C"></span>Vivienda</th><td class="num strong">638 €</td><td class="num dim">33&thinsp;%</td><td class="num dim">63,2 €/día</td></tr><tr><th scope="row"><span class="dot" style="background:#C4661F"></span>Comida</th><td class="num strong">350 €</td><td class="num dim">18&thinsp;%</td><td class="num dim">34,7 €/día</td></tr><tr><th scope="row"><span class="dot" style="background:#6B4FA1"></span>Universidad</th><td class="num strong">258 €</td><td class="num dim">13&thinsp;%</td><td class="num dim">25,6 €/día</td></tr><tr><th scope="row"><span class="dot" style="background:#2C7C79"></span>Moverse</th><td class="num strong">224 €</td><td class="num dim">11&thinsp;%</td><td class="num dim">22,2 €/día</td></tr><tr><th scope="row"><span class="dot" style="background:#8A7A1F"></span>Recibos</th><td class="num strong">226 €</td><td class="num dim">12&thinsp;%</td><td class="num dim">22,4 €/día</td></tr><tr><th scope="row"><span class="dot" style="background:#B0455A"></span>Vida</th><td class="num strong">259 €</td><td class="num dim">13&thinsp;%</td><td class="num dim">25,7 €/día</td></tr></tbody></table>
+    <th class="num">Al día</th></tr></thead><tbody><tr><th scope="row"><span class="dot" style="background:#1F4E9C"></span>Vivienda</th><td class="num strong">638 €</td><td class="num dim">33&thinsp;%</td><td class="num dim">21,0 €/día</td></tr><tr><th scope="row"><span class="dot" style="background:#C4661F"></span>Comida</th><td class="num strong">350 €</td><td class="num dim">18&thinsp;%</td><td class="num dim">11,5 €/día</td></tr><tr><th scope="row"><span class="dot" style="background:#6B4FA1"></span>Universidad</th><td class="num strong">258 €</td><td class="num dim">13&thinsp;%</td><td class="num dim">8,5 €/día</td></tr><tr><th scope="row"><span class="dot" style="background:#2C7C79"></span>Moverse</th><td class="num strong">224 €</td><td class="num dim">11&thinsp;%</td><td class="num dim">7,4 €/día</td></tr><tr><th scope="row"><span class="dot" style="background:#8A7A1F"></span>Recibos</th><td class="num strong">226 €</td><td class="num dim">12&thinsp;%</td><td class="num dim">7,4 €/día</td></tr><tr><th scope="row"><span class="dot" style="background:#B0455A"></span>Vida</th><td class="num strong">259 €</td><td class="num dim">13&thinsp;%</td><td class="num dim">8,5 €/día</td></tr></tbody></table>
   <p class="note" style="margin-top:16px"><strong>1.123 € fijos</strong> —vivienda, universidad
     y recibos, el 57&thinsp;%— y 834 € que sí depende de mí.
     Los tres primeros grupos (1.247 €)
@@ -119,121 +138,11 @@ footer { border-top:1px solid var(--line); padding:20px 0 44px; font-size:12.5px
 </div></section>
 
 <section id="meses"><div class="wrap">
-  <h2>Los once meses</h2>
-  <p class="note">Octubre gastó 3.280 € y
-    septiembre 916 €: 3.6×
-    de diferencia. La barra gris mide cada mes sobre el más caro (3.280 €).</p>
-  <div class="months"><article class="m">
-        <header><h3>Enero<span class="yr">2026</span></h3>
-          <span class="tot">1.628 €</span></header>
-        <div class="scale"><i style="width:49.6%"></i></div>
-        <div class="bar"><span style="width:38.58%;background:#1F4E9C" title="Vivienda: 628 €"></span><span style="width:13.08%;background:#C4661F" title="Comida: 213 €"></span><span style="width:32.67%;background:#6B4FA1" title="Universidad: 532 €"></span><span style="width:3.11%;background:#2C7C79" title="Moverse: 51 €"></span><span style="width:1.90%;background:#8A7A1F" title="Recibos: 31 €"></span><span style="width:10.65%;background:#B0455A" title="Vida: 173 €"></span></div>
-        <p class="cats">Vivienda 628 € · Comida 213 € · Universidad 532 € · Vida 173 €</p>
-        <p class="net">Ingreso 665 € · neto
-          <b class="neg">−963 €</b>
-          </p>
-        <ul class="top"><li><span class="d">30</span><span class="t">VB Living B.V.</span><span class="a">628 €</span></li><li><span class="d">11</span><span class="t">TU/e</span><span class="a">260 €</span></li><li><span class="d">26</span><span class="t">Technische Universiteit</span><span class="a">260 €</span></li></ul>
-      </article><article class="m">
-        <header><h3>Febrero<span class="yr">2026</span></h3>
-          <span class="tot">1.580 €</span></header>
-        <div class="scale"><i style="width:48.2%"></i></div>
-        <div class="bar"><span style="width:39.75%;background:#1F4E9C" title="Vivienda: 628 €"></span><span style="width:14.47%;background:#C4661F" title="Comida: 229 €"></span><span style="width:16.86%;background:#6B4FA1" title="Universidad: 266 €"></span><span style="width:7.27%;background:#2C7C79" title="Moverse: 115 €"></span><span style="width:1.29%;background:#8A7A1F" title="Recibos: 20 €"></span><span style="width:20.35%;background:#B0455A" title="Vida: 322 €"></span></div>
-        <p class="cats">Vivienda 628 € · Comida 229 € · Universidad 266 € · Moverse 115 € · Vida 322 €</p>
-        <p class="net">Ingreso 1.773 € · neto
-          <b class="pos">+193 €</b>
-          </p>
-        <ul class="top"><li><span class="d">27</span><span class="t">VB Living B.V.</span><span class="a">628 €</span></li><li><span class="d">25</span><span class="t">Technische Universiteit</span><span class="a">260 €</span></li><li><span class="d">18</span><span class="t">Deutsche Bahn</span><span class="a">60 €</span></li></ul>
-      </article><article class="m">
-        <header><h3>Marzo<span class="yr">2026</span></h3>
-          <span class="tot">1.823 €</span></header>
-        <div class="scale"><i style="width:55.6%"></i></div>
-        <div class="bar"><span style="width:34.44%;background:#1F4E9C" title="Vivienda: 628 €"></span><span style="width:19.05%;background:#C4661F" title="Comida: 347 €"></span><span style="width:15.02%;background:#6B4FA1" title="Universidad: 274 €"></span><span style="width:17.38%;background:#2C7C79" title="Moverse: 317 €"></span><span style="width:1.12%;background:#8A7A1F" title="Recibos: 20 €"></span><span style="width:12.98%;background:#B0455A" title="Vida: 237 €"></span></div>
-        <p class="cats">Vivienda 628 € · Comida 347 € · Universidad 274 € · Moverse 317 € · Vida 237 €</p>
-        <p class="net">Ingreso 1.805 € · neto
-          <b class="neg">−19 €</b>
-          </p>
-        <ul class="top"><li><span class="d">31</span><span class="t">VB Living B.V.</span><span class="a">628 €</span></li><li><span class="d">25</span><span class="t">Technische Universiteit</span><span class="a">260 €</span></li><li><span class="d">24</span><span class="t">Ryanair</span><span class="a">140 €</span></li></ul>
-      </article><article class="m">
-        <header><h3>Abril<span class="yr">2026</span></h3>
-          <span class="tot">1.784 €</span></header>
-        <div class="scale"><i style="width:54.4%"></i></div>
-        <div class="bar"><span style="width:35.20%;background:#1F4E9C" title="Vivienda: 628 €"></span><span style="width:26.27%;background:#C4661F" title="Comida: 469 €"></span><span style="width:14.88%;background:#6B4FA1" title="Universidad: 266 €"></span><span style="width:6.01%;background:#2C7C79" title="Moverse: 107 €"></span><span style="width:1.67%;background:#8A7A1F" title="Recibos: 30 €"></span><span style="width:15.97%;background:#B0455A" title="Vida: 285 €"></span></div>
-        <p class="cats">Vivienda 628 € · Comida 469 € · Universidad 266 € · Moverse 107 € · Vida 285 €</p>
-        <p class="net">Ingreso 1.255 € · neto
-          <b class="neg">−530 €</b>
-          </p>
-        <ul class="top"><li><span class="d">30</span><span class="t">VB Living B.V.</span><span class="a">628 €</span></li><li><span class="d">28</span><span class="t">Technische Universiteit</span><span class="a">260 €</span></li><li><span class="d">30</span><span class="t">Traspaso a un particular</span><span class="a">123 €</span></li></ul>
-      </article><article class="m">
-        <header><h3>Mayo<span class="yr">2026</span></h3>
-          <span class="tot">2.627 €</span></header>
-        <div class="scale"><i style="width:80.1%"></i></div>
-        <div class="bar"><span style="width:24.07%;background:#1F4E9C" title="Vivienda: 632 €"></span><span style="width:15.89%;background:#C4661F" title="Comida: 418 €"></span><span style="width:9.90%;background:#6B4FA1" title="Universidad: 260 €"></span><span style="width:9.08%;background:#2C7C79" title="Moverse: 239 €"></span><span style="width:29.12%;background:#8A7A1F" title="Recibos: 765 €"></span><span style="width:11.94%;background:#B0455A" title="Vida: 314 €"></span></div>
-        <p class="cats">Vivienda 632 € · Comida 418 € · Universidad 260 € · Moverse 239 € · Recibos 765 € · Vida 314 €</p>
-        <p class="net">Ingreso 2.027 € · neto
-          <b class="neg">−600 €</b>
-          </p>
-        <ul class="top"><li><span class="d">29</span><span class="t">VB Living B.V.</span><span class="a">628 €</span></li><li><span class="d">12</span><span class="t">VinkVink</span><span class="a">555 €</span></li><li><span class="d">26</span><span class="t">Technische Universiteit</span><span class="a">260 €</span></li></ul>
-      </article><article class="m">
-        <header><h3>Junio<span class="yr">2026</span></h3>
-          <span class="tot">2.008 €</span></header>
-        <div class="scale"><i style="width:61.2%"></i></div>
-        <div class="bar"><span style="width:32.06%;background:#1F4E9C" title="Vivienda: 644 €"></span><span style="width:18.80%;background:#C4661F" title="Comida: 377 €"></span><span style="width:12.96%;background:#6B4FA1" title="Universidad: 260 €"></span><span style="width:16.48%;background:#2C7C79" title="Moverse: 331 €"></span><span style="width:9.48%;background:#8A7A1F" title="Recibos: 190 €"></span><span style="width:10.23%;background:#B0455A" title="Vida: 205 €"></span></div>
-        <p class="cats">Vivienda 644 € · Comida 377 € · Universidad 260 € · Moverse 331 € · Recibos 190 € · Vida 205 €</p>
-        <p class="net">Ingreso 1.874 € · neto
-          <b class="neg">−133 €</b>
-          </p>
-        <ul class="top"><li><span class="d">30</span><span class="t">VB Living B.V.</span><span class="a">644 €</span></li><li><span class="d">25</span><span class="t">Technische Universiteit</span><span class="a">260 €</span></li><li><span class="d">29</span><span class="t">VinkVink</span><span class="a">142 €</span></li></ul>
-      </article><article class="m">
-        <header><h3>Julio<span class="yr">2026</span></h3>
-          <span class="tot">2.087 €</span></header>
-        <div class="scale"><i style="width:63.6%"></i></div>
-        <div class="bar"><span style="width:31.89%;background:#1F4E9C" title="Vivienda: 665 €"></span><span style="width:19.15%;background:#C4661F" title="Comida: 400 €"></span><span style="width:0.24%;background:#6B4FA1" title="Universidad: 5 €"></span><span style="width:18.53%;background:#2C7C79" title="Moverse: 387 €"></span><span style="width:22.59%;background:#8A7A1F" title="Recibos: 471 €"></span><span style="width:7.59%;background:#B0455A" title="Vida: 158 €"></span></div>
-        <p class="cats">Vivienda 665 € · Comida 400 € · Moverse 387 € · Recibos 471 € · Vida 158 €</p>
-        <p class="net">Ingreso 2.284 € · neto
-          <b class="pos">+198 €</b>
-          </p>
-        <ul class="top"><li><span class="d">31</span><span class="t">VB Living B.V.</span><span class="a">644 €</span></li><li><span class="d">13</span><span class="t">CJIB · multas</span><span class="a">274 €</span></li><li><span class="d">31</span><span class="t">Booking.com</span><span class="a">270 €</span></li></ul>
-      </article><article class="m">
-        <header><h3>Agosto<span class="yr">2026</span></h3>
-          <span class="tot">1.831 €</span></header>
-        <div class="scale"><i style="width:55.8%"></i></div>
-        <div class="bar"><span style="width:35.14%;background:#1F4E9C" title="Vivienda: 644 €"></span><span style="width:21.98%;background:#C4661F" title="Comida: 403 €"></span><span style="width:14.58%;background:#2C7C79" title="Moverse: 267 €"></span><span style="width:8.68%;background:#8A7A1F" title="Recibos: 159 €"></span><span style="width:19.62%;background:#B0455A" title="Vida: 359 €"></span></div>
-        <p class="cats">Vivienda 644 € · Comida 403 € · Moverse 267 € · Recibos 159 € · Vida 359 €</p>
-        <p class="net">Ingreso 747 € · neto
-          <b class="neg">−1.084 €</b>
-          </p>
-        <ul class="top"><li><span class="d">31</span><span class="t">VB Living B.V.</span><span class="a">644 €</span></li><li><span class="d">28</span><span class="t">VinkVink</span><span class="a">142 €</span></li><li><span class="d">2</span><span class="t">Amovens</span><span class="a">105 €</span></li></ul>
-      </article><article class="m">
-        <header><h3>Septiembre<span class="yr">2026</span></h3>
-          <span class="tot">916 €</span></header>
-        <div class="scale"><i style="width:27.9%"></i></div>
-        <div class="bar"><span style="width:31.04%;background:#C4661F" title="Comida: 284 €"></span><span style="width:16.98%;background:#6B4FA1" title="Universidad: 156 €"></span><span style="width:1.15%;background:#2C7C79" title="Moverse: 10 €"></span><span style="width:21.69%;background:#8A7A1F" title="Recibos: 199 €"></span><span style="width:29.14%;background:#B0455A" title="Vida: 267 €"></span></div>
-        <p class="cats">Comida 284 € · Universidad 156 € · Recibos 199 € · Vida 267 €</p>
-        <p class="net">Ingreso 812 € · neto
-          <b class="neg">−104 €</b>
-          </p>
-        <ul class="top"><li><span class="d">8</span><span class="t">TU/e</span><span class="a">155 €</span></li><li><span class="d">29</span><span class="t">VinkVink</span><span class="a">142 €</span></li><li><span class="d">19</span><span class="t">Decathlon</span><span class="a">83 €</span></li></ul>
-      </article><article class="m">
-        <header><h3>Octubre<span class="yr">2026</span></h3>
-          <span class="tot">3.280 €</span></header>
-        <div class="scale"><i style="width:100.0%"></i></div>
-        <div class="bar"><span style="width:39.24%;background:#1F4E9C" title="Vivienda: 1.287 €"></span><span style="width:11.06%;background:#C4661F" title="Comida: 363 €"></span><span style="width:17.16%;background:#6B4FA1" title="Universidad: 563 €"></span><span style="width:12.80%;background:#2C7C79" title="Moverse: 420 €"></span><span style="width:11.49%;background:#8A7A1F" title="Recibos: 377 €"></span><span style="width:8.25%;background:#B0455A" title="Vida: 270 €"></span></div>
-        <p class="cats">Vivienda 1.287 € · Comida 363 € · Universidad 563 € · Moverse 420 € · Recibos 377 € · Vida 270 €</p>
-        <p class="net">Ingreso 2.624 € · neto
-          <b class="neg">−656 €</b>
-          </p>
-        <ul class="top"><li><span class="d">6</span><span class="t">Holland2Stay</span><span class="a">644 €</span></li><li><span class="d">30</span><span class="t">VB Living B.V.</span><span class="a">644 €</span></li><li><span class="d">13</span><span class="t">TU/e</span><span class="a">293 €</span></li></ul>
-      </article><article class="m partial">
-        <header><h3>Noviembre<span class="yr">2026</span></h3>
-          <span class="tot">50 €</span></header>
-        <div class="scale"><i style="width:1.5%"></i></div>
-        <div class="bar"><span style="width:51.72%;background:#C4661F" title="Comida: 26 €"></span><span style="width:8.64%;background:#8A7A1F" title="Recibos: 4 €"></span><span style="width:39.63%;background:#B0455A" title="Vida: 20 €"></span></div>
-        <p class="cats">Comida 26 € · Recibos 4 € · Vida 20 €</p>
-        <p class="net">Ingreso 502 € · neto
-          <b class="pos">+452 €</b>
-           · mes parcial</p>
-        <ul class="top"><li><span class="d">2</span><span class="t">Fourvenues</span><span class="a">14 €</span></li><li><span class="d">2</span><span class="t">Santiago de Cuba</span><span class="a">8 €</span></li><li><span class="d">2</span><span class="t">Bambi</span><span class="a">8 €</span></li></ul>
-      </article></div>
+  <h2>Cómo varían</h2>
+  <p class="note">Siete de los diez meses completos caen entre 1.500 y 2.100 €.
+    Octubre se va a 3.280 € por el alquiler cobrado dos veces (6 y 30);
+    septiembre, a 916 € por no tener matrícula.</p>
+  <figure><div class="cw"><svg viewBox="0 0 1000 300" class="chart" role="img" aria-label="Gasto de cada mes"><line x1="50" y1="266.0" x2="990" y2="266.0" class="gl"/><text x="42" y="269.8" text-anchor="end" class="ax">0</text><line x1="50" y1="206.0" x2="990" y2="206.0" class="gl"/><text x="42" y="209.8" text-anchor="end" class="ax">1k</text><line x1="50" y1="146.0" x2="990" y2="146.0" class="gl"/><text x="42" y="149.8" text-anchor="end" class="ax">2k</text><line x1="50" y1="86.0" x2="990" y2="86.0" class="gl"/><text x="42" y="89.8" text-anchor="end" class="ax">3k</text><line x1="50" y1="26.0" x2="990" y2="26.0" class="gl"/><text x="42" y="29.8" text-anchor="end" class="ax">4k</text><line x1="50" y1="148.6" x2="990" y2="148.6" stroke="#0D1117" stroke-width="1.3" stroke-dasharray="5 4"/><text x="58" y="28.0" class="avl">— media 1.956 €</text><rect x="71.4" y="168.3" width="42.7" height="97.7" fill="#1F4E9C" rx="2"><title>Enero: 1.628 €</title></rect><text x="92.7" y="160.3" text-anchor="middle" class="vl">1.628 €</text><text x="92.7" y="291" text-anchor="middle" class="ax">ene</text><rect x="156.8" y="171.2" width="42.7" height="94.8" fill="#1F4E9C" rx="2"><title>Febrero: 1.580 €</title></rect><text x="178.2" y="163.2" text-anchor="middle" class="vl">1.580 €</text><text x="178.2" y="291" text-anchor="middle" class="ax">feb</text><rect x="242.3" y="156.6" width="42.7" height="109.4" fill="#1F4E9C" rx="2"><title>Marzo: 1.823 €</title></rect><text x="263.6" y="148.6" text-anchor="middle" class="vl">1.823 €</text><text x="263.6" y="291" text-anchor="middle" class="ax">mar</text><rect x="327.7" y="158.9" width="42.7" height="107.1" fill="#1F4E9C" rx="2"><title>Abril: 1.784 €</title></rect><text x="349.1" y="150.9" text-anchor="middle" class="vl">1.784 €</text><text x="349.1" y="291" text-anchor="middle" class="ax">abr</text><rect x="413.2" y="108.4" width="42.7" height="157.6" fill="#1F4E9C" rx="2"><title>Mayo: 2.627 €</title></rect><text x="434.5" y="100.4" text-anchor="middle" class="vl">2.627 €</text><text x="434.5" y="291" text-anchor="middle" class="ax">may</text><rect x="498.6" y="145.6" width="42.7" height="120.4" fill="#1F4E9C" rx="2"><title>Junio: 2.008 €</title></rect><text x="520.0" y="137.6" text-anchor="middle" class="vl">2.008 €</text><text x="520.0" y="291" text-anchor="middle" class="ax">jun</text><rect x="584.1" y="140.8" width="42.7" height="125.2" fill="#1F4E9C" rx="2"><title>Julio: 2.087 €</title></rect><text x="605.5" y="132.8" text-anchor="middle" class="vl">2.087 €</text><text x="605.5" y="291" text-anchor="middle" class="ax">jul</text><rect x="669.5" y="156.1" width="42.7" height="109.9" fill="#1F4E9C" rx="2"><title>Agosto: 1.831 €</title></rect><text x="690.9" y="148.1" text-anchor="middle" class="vl">1.831 €</text><text x="690.9" y="291" text-anchor="middle" class="ax">ago</text><rect x="755.0" y="211.0" width="42.7" height="55.0" fill="#1F4E9C" rx="2"><title>Septiembre: 916 €</title></rect><text x="776.4" y="203.0" text-anchor="middle" class="vl">916 €</text><text x="776.4" y="291" text-anchor="middle" class="ax">sep</text><rect x="840.5" y="69.2" width="42.7" height="196.8" fill="#1F4E9C" rx="2"><title>Octubre: 3.280 €</title></rect><text x="861.8" y="61.2" text-anchor="middle" class="vl">3.280 €</text><text x="861.8" y="291" text-anchor="middle" class="ax">oct</text><rect x="925.9" y="263.0" width="42.7" height="3.0" fill="#B9C2CE" rx="2"><title>Noviembre: 50 €</title></rect><text x="947.3" y="255.0" text-anchor="middle" class="vl">50 €</text><text x="947.3" y="291" text-anchor="middle" class="ax">nov</text><line x1="50" y1="266" x2="990" y2="266" class="base"/></svg></div><div class="cn"><svg viewBox="0 0 400 260" class="chart" role="img" aria-label="Gasto de cada mes"><line x1="32" y1="230.0" x2="394" y2="230.0" class="gl"/><text x="24" y="233.8" text-anchor="end" class="ax">0</text><line x1="32" y1="178.0" x2="394" y2="178.0" class="gl"/><text x="24" y="181.8" text-anchor="end" class="ax">1k</text><line x1="32" y1="126.0" x2="394" y2="126.0" class="gl"/><text x="24" y="129.8" text-anchor="end" class="ax">2k</text><line x1="32" y1="74.0" x2="394" y2="74.0" class="gl"/><text x="24" y="77.8" text-anchor="end" class="ax">3k</text><line x1="32" y1="22.0" x2="394" y2="22.0" class="gl"/><text x="24" y="25.8" text-anchor="end" class="ax">4k</text><line x1="32" y1="128.3" x2="394" y2="128.3" stroke="#0D1117" stroke-width="1.3" stroke-dasharray="5 4"/><text x="40" y="24.0" class="avl">— media 1.956 €</text><rect x="39.2" y="145.4" width="18.4" height="84.6" fill="#1F4E9C" rx="2"><title>Enero: 1.628 €</title></rect><text x="48.5" y="251" text-anchor="middle" class="ax">ene</text><rect x="72.1" y="147.8" width="18.4" height="82.2" fill="#1F4E9C" rx="2"><title>Febrero: 1.580 €</title></rect><text x="81.4" y="251" text-anchor="middle" class="ax">feb</text><rect x="105.1" y="135.2" width="18.4" height="94.8" fill="#1F4E9C" rx="2"><title>Marzo: 1.823 €</title></rect><text x="114.3" y="251" text-anchor="middle" class="ax">mar</text><rect x="138.0" y="137.2" width="18.4" height="92.8" fill="#1F4E9C" rx="2"><title>Abril: 1.784 €</title></rect><text x="147.2" y="251" text-anchor="middle" class="ax">abr</text><rect x="170.9" y="93.4" width="18.4" height="136.6" fill="#1F4E9C" rx="2"><title>Mayo: 2.627 €</title></rect><text x="180.1" y="251" text-anchor="middle" class="ax">may</text><rect x="203.8" y="125.6" width="18.4" height="104.4" fill="#1F4E9C" rx="2"><title>Junio: 2.008 €</title></rect><text x="213.0" y="251" text-anchor="middle" class="ax">jun</text><rect x="236.7" y="121.5" width="18.4" height="108.5" fill="#1F4E9C" rx="2"><title>Julio: 2.087 €</title></rect><text x="245.9" y="251" text-anchor="middle" class="ax">jul</text><rect x="269.6" y="134.8" width="18.4" height="95.2" fill="#1F4E9C" rx="2"><title>Agosto: 1.831 €</title></rect><text x="278.8" y="251" text-anchor="middle" class="ax">ago</text><rect x="302.5" y="182.4" width="18.4" height="47.6" fill="#1F4E9C" rx="2"><title>Septiembre: 916 €</title></rect><text x="311.7" y="174.4" text-anchor="middle" class="vl">916 €</text><text x="311.7" y="251" text-anchor="middle" class="ax">sep</text><rect x="335.4" y="59.4" width="18.4" height="170.6" fill="#1F4E9C" rx="2"><title>Octubre: 3.280 €</title></rect><text x="344.6" y="51.4" text-anchor="middle" class="vl">3.280 €</text><text x="344.6" y="251" text-anchor="middle" class="ax">oct</text><rect x="368.3" y="227.4" width="18.4" height="2.6" fill="#B9C2CE" rx="2"><title>Noviembre: 50 €</title></rect><text x="377.5" y="251" text-anchor="middle" class="ax">nov</text><line x1="32" y1="230" x2="394" y2="230" class="base"/></svg></div></figure>
 </div></section>
 
 <section id="fijo"><div class="wrap">

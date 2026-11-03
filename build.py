@@ -95,6 +95,12 @@ def build(csv_path, outdir="."):
     first, last = min(t["date"] for t in txs), max(t["date"] for t in txs)
     days = (last - first).days + 1
     partial = (today.year, today.month)
+    import calendar as _cal
+    _last_full = max((y_, mo) for (y_, mo) in months if (y_, mo) != partial)
+    _end = datetime.date(_last_full[0], _last_full[1],
+                         _cal.monthrange(_last_full[0], _last_full[1])[1])
+    days_full = (_end - first).days + 1
+
 
     bym = collections.OrderedDict()
     for ym in months:
@@ -163,39 +169,48 @@ def build(csv_path, outdir="."):
         f'<tr><th scope="row"><span class="dot" style="background:{G_COLOR[g]}"></span>{g}</th>'
         f'<td class="num strong">{eur(avg_groups[g])}</td>'
         f'<td class="num dim">{avg_groups[g]/avg_month*100:.0f}&thinsp;%</td>'
-        f'<td class="num dim">{eur(avg_groups[g]/days*30.4,1)}/día</td></tr>'
+        f'<td class="num dim">{eur(avg_groups[g]/30.4,1)}/día</td></tr>'
         for g in G_ORDER)
 
-    # ---- month cards
-    cards = []
-    for ym in months:
-        m = bym[ym]
-        is_partial = ym == partial
-        w = m["spend"] / max_month_spend * 100
-        segs = "".join(
-            f'<span style="width:{m["groups"].get(g,0)/m["spend"]*100:.2f}%;background:{G_COLOR[g]}" '
-            f'title="{g}: {eur(m["groups"].get(g,0))}"></span>'
-            for g in G_ORDER if m["groups"].get(g))
-        cats = " · ".join(
-            f'{g} {eur(m["groups"][g])}' for g in G_ORDER
-            if m["groups"].get(g) and m["groups"][g] / m["spend"] > 0.06)
-        tops = "".join(
-            f'<li><span class="d">{t["date"].day}</span>'
-            f'<span class="t">{html.escape(clean(t["desc"]))}</span>'
-            f'<span class="a">{eur(-t["amount"])}</span></li>' for t in m["top"])
-        net = m["income"] - m["spend"]
-        cards.append(f"""<article class="m{' partial' if is_partial else ''}">
-        <header><h3>{MONTHS[ym[1]]}<span class="yr">{ym[0]}</span></h3>
-          <span class="tot">{eur(m["spend"])}</span></header>
-        <div class="scale"><i style="width:{w:.1f}%"></i></div>
-        <div class="bar">{segs}</div>
-        <p class="cats">{cats}</p>
-        <p class="net">Ingreso {eur(m["income"])} · neto
-          <b class="{'neg' if net < 0 else 'pos'}">{eur(net, sign=True)}</b>
-          {' · mes parcial' if is_partial else ''}</p>
-        <ul class="top">{tops}</ul>
-      </article>""")
+    # ---- monthly chart (replaces the per-month recount)
+    def months_chart(small=False):
+        W, H = (400, 260) if small else (1000, 300)
+        L, R, T, B = (32, 6, 22, 30) if small else (50, 10, 26, 34)
+        pw, ph = W - L - R, H - T - B
+        peak = max(bym[m]["spend"] for m in months)
+        step = next(c for c in [250, 500, 1000, 1500] if c >= peak / (4 if small else 5))
+        top = -(-peak // step) * step
+        sc = ph / top
+        slot = pw / len(months)
+        bw = min(slot * (0.56 if small else 0.5), 46)
+        o = [f'<svg viewBox="0 0 {W} {H}" class="chart" role="img" aria-label="Gasto de cada mes">']
+        g = 0
+        while g <= top:
+            y = T + ph - g * sc
+            o.append(f'<line x1="{L}" y1="{y:.1f}" x2="{W-R}" y2="{y:.1f}" class="gl"/>')
+            o.append(f'<text x="{L-8}" y="{y+3.8:.1f}" text-anchor="end" class="ax">'
+                     f'{g//1000}k</text>' if g and g % 1000 == 0 else
+                     f'<text x="{L-8}" y="{y+3.8:.1f}" text-anchor="end" class="ax">{g}</text>')
+            g += step
+        ya = T + ph - avg_month * sc
+        o.append(f'<line x1="{L}" y1="{ya:.1f}" x2="{W-R}" y2="{ya:.1f}" stroke="#0D1117" '
+                 f'stroke-width="1.3" stroke-dasharray="5 4"/>')
+        o.append(f'<text x="{L+8}" y="{T+2:.1f}" class="avl">— media {eur(avg_month)}</text>')
+        for i, ym in enumerate(months):
+            m = bym[ym]
+            cx = L + slot * i + slot / 2
+            h = m["spend"] * sc
+            col = "#1F4E9C" if ym != partial else "#B9C2CE"
+            o.append(f'<rect x="{cx-bw/2:.1f}" y="{T+ph-h:.1f}" width="{bw:.1f}" height="{max(h,0.6):.1f}" '
+                     f'fill="{col}" rx="2"><title>{MONTHS[ym[1]]}: {eur(m["spend"])}</title></rect>')
+            if not small or ym in (mon_mx, mon_mn):
+                o.append(f'<text x="{cx:.1f}" y="{T+ph-h-8:.1f}" text-anchor="middle" class="vl">{eur(m["spend"])}</text>')
+            o.append(f'<text x="{cx:.1f}" y="{H-9}" text-anchor="middle" class="ax">{ABBR[ym[1]]}</text>')
+        o.append(f'<line x1="{L}" y1="{T+ph}" x2="{W-R}" y2="{T+ph}" class="base"/>')
+        o.append("</svg>")
+        return "".join(o)
 
+    mchart, mchart_s = months_chart(), months_chart(small=True)
     rec_rows = "".join(
         f'<tr><th scope="row">{html.escape(n)}</th><td class="num dim">{nm} de 11</td>'
         f'<td class="num strong">{eur(med,2)}</td><td class="num dim">{eur(med*12)}/año</td></tr>'
@@ -220,7 +235,15 @@ body {{ margin:0; background:var(--bg); color:var(--ink);
 h1,h2,h3,p,ul,ol {{ margin:0; }}
 a {{ color:var(--blue); text-underline-offset:3px; }}
 .wrap {{ max-width:1000px; margin:0 auto; padding:0 28px; }}
-@media (max-width:640px) {{ .wrap {{ padding:0 18px; }} }}
+@media (max-width:640px) {{
+  .wrap {{ padding:0 18px; }}
+  nav .wrap {{ padding:10px 18px; gap:16px; }}
+  h1 {{ letter-spacing:-.03em; }}
+  .num {{ font-size:12.5px; padding-left:8px; }}
+  tbody th, tbody td {{ font-size:13.5px; padding:9px 0; }}
+  .avgbar {{ height:38px; }}
+  .avgbar b {{ font-size:11.5px; }}
+}}
 
 nav {{ position:sticky; top:0; z-index:20; background:#F6F7F9EE; backdrop-filter:blur(8px);
   border-bottom:1px solid var(--line); }}
@@ -262,9 +285,20 @@ tbody th {{ font-weight:500; text-align:left; }}
 .pos {{ color:var(--green); }} .neg {{ color:var(--red); }}
 .dot {{ display:inline-block; width:9px; height:9px; border-radius:2px; margin-right:9px; }}
 
+/* charts */
+figure {{ margin:18px 0 6px; }}
+.chart {{ width:100%; height:auto; display:block; overflow:visible; }}
+.gl {{ stroke:#E7EAEF; stroke-width:1; }}
+.base {{ stroke:#0D1117; stroke-width:1.2; }}
+text.ax {{ font-family:"Inter",sans-serif; font-size:11px; fill:#77808D; }}
+text.vl {{ font-family:"Inter",sans-serif; font-size:11px; font-weight:600; fill:#20262D; }}
+text.avl {{ font-family:"Inter",sans-serif; font-size:11px; fill:#0D1117; font-weight:500; }}
+.cn {{ display:none; }}
+@media (max-width:640px) {{ .cw {{ display:none; }} .cn {{ display:block; }} }}
+
 /* month grid */
 .months {{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:22px; }}
-@media (max-width:760px) {{ .months {{ grid-template-columns:1fr; }} }}
+
 .m {{ background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 16px 12px; }}
 .m header {{ display:flex; justify-content:space-between; align-items:baseline; }}
 .m h3 {{ font-size:19px; }}
@@ -295,20 +329,20 @@ footer {{ border-top:1px solid var(--line); padding:20px 0 44px; font-size:12.5p
 <body>
 <nav><div class="wrap">
   <span class="brand">Gastos 2026</span>
-  <a href="#tipo">El mes tipo</a><a href="#meses">Los once meses</a>
+  <a href="#tipo">El mes tipo</a><a href="#meses">Cómo varían</a>
   <a href="#fijo">Lo fijo</a><a href="#metodo">Método</a>
 </div></nav>
 
 <header class="hero"><div class="wrap">
   <h1>1.956&nbsp;€ al mes<span>.</span></h1>
-  <p class="dek">Es la media de los diez meses completos del año: {eur(total_comp)} en {days} días.
+  <p class="dek">Es la media de los diez meses completos: {eur(total_comp)} en {days_full} días.
     Así se compone un mes normal, y así se desviaron los otros.</p>
 </div></header>
 
 <section id="tipo"><div class="wrap">
   <h2>El mes tipo</h2>
   <p class="note">Si cada mes fuera igual, sería esta barra. Seis grupos, {eur(avg_month)} al mes,
-    {eur(avg_month/days*30.4)} al día.</p>
+    {eur(avg_month/30.4)} al día.</p>
   <div class="avgbar">{seg}</div>
   <div class="avglabels">{''.join(f'<span class="al"><i style="background:{G_COLOR[g]}"></i>{g}</span>' for g in G_ORDER)}</div>
   <table><thead><tr><th>Grupo</th><th class="num">Al mes</th><th class="num">Peso</th>
@@ -321,11 +355,11 @@ footer {{ border-top:1px solid var(--line); padding:20px 0 44px; font-size:12.5p
 </div></section>
 
 <section id="meses"><div class="wrap">
-  <h2>Los once meses</h2>
-  <p class="note">{MONTHS[mon_mx[1]]} gastó {eur(bym[mon_mx]['spend'])} y
-    {MONTHS[mon_mn[1]].lower()} {eur(bym[mon_mn]['spend'])}: {bym[mon_mx]['spend']/bym[mon_mn]['spend']:.1f}×
-    de diferencia. La barra gris mide cada mes sobre el más caro ({eur(max_month_spend)}).</p>
-  <div class="months">{''.join(cards)}</div>
+  <h2>Cómo varían</h2>
+  <p class="note">Siete de los diez meses completos caen entre 1.500 y 2.100 €.
+    {MONTHS[mon_mx[1]]} se va a {eur(bym[mon_mx]['spend'])} por el alquiler cobrado dos veces (6 y 30);
+    {MONTHS[mon_mn[1]].lower()}, a {eur(bym[mon_mn]['spend'])} por no tener matrícula.</p>
+  <figure><div class="cw">{mchart}</div><div class="cn">{mchart_s}</div></figure>
 </div></section>
 
 <section id="fijo"><div class="wrap">
